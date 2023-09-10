@@ -3,6 +3,7 @@ var theta = 0.0;
 var disPosition;
 var displacement = vec2(0, 0);
 var speed = vec2(0.004, 0.003);
+var vertexCount = 20;
 
 window.onload = function init() {
     var canvas = document.getElementById("gl-canvas");
@@ -12,12 +13,14 @@ window.onload = function init() {
 
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    var vertices2 = [
-        vec2(0, 0.5),
-        vec2(0.5, 0),
-        vec2(-0.5, 0),
-        vec2(0, -0.5)
-    ];
+    var vertices2 = [vec2(0, 0)]
+    var theta = 0;
+    var angleChange = 2 * Math.PI / (vertexCount - 2)
+    for (let i = 1; i < vertexCount; i++) {
+        var pos = vec2(0.5 * Math.cos(theta), 0.5 * Math.sin(theta));
+        vertices2.push(pos);
+        theta += angleChange;
+    }
 
     var program = initShaders(gl, "vertex-shader", "fragment-shader");
     gl.useProgram(program);
@@ -42,5 +45,5 @@ function render() {
         speed[1] = -speed[1];
     }
     gl.uniform2fv(disPosition, displacement);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, vertexCount);
 }
