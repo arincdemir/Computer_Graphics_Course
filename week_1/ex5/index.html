@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise 1</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../../angelCommon/webgl-utils.js"></script>
+    <script type="text/javascript" src="../../angelCommon/initShaders.js"></script>
+    <script type="text/javascript" src="../../angelCommon/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+
+    <script type="x-shader/x-fragment" id="vertex-shader">
+        attribute vec4 vPosition;
+        uniform vec2 displacement;
+        void main() {
+            gl_Position = vPosition + vec4(displacement, 0.0, 0.0);
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragment-shader">
+        precision mediump float;
+        void main() {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512">
+        <!-- The following message is displayed if the browser doesn’t
+        -- support HTML5 -->
+        Sorry, your web browser does not support HTML5’s canvas element.
+    </canvas>
+</body>
+</html>
