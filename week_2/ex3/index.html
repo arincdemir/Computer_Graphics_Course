@@ -15,7 +15,6 @@
         void main() {
             gl_Position = vPosition;
             fColor = vColor;
-            gl_PointSize = 10.0;
         }
     </script>
     <script type="x-shader/x-fragment" id="fragment-shader">
@@ -41,12 +40,14 @@
         <option value="4" selected>cyan</option>
         <option value="5" selected>blue</option>
         <option value="6" selected>magenta</option>
-        <option value="7" selected>white</option>
     </select>
     <button id="clear-button">CLEAR</button>
 
     <br>
     
+    <button id="point-button">Point</button>
+    <button id="triangle-button">Triangle</button>
+    <button id="circle-button">Circle</button>
     <select id="draw-color">
         <option value="0" selected>black</option>
         <option value="1" selected>red</option>
