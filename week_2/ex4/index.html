@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise 1</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../../angelCommon/webgl-utils.js"></script>
+    <script type="text/javascript" src="../../angelCommon/initShaders.js"></script>
+    <script type="text/javascript" src="../../angelCommon/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+
+    <script type="x-shader/x-fragment" id="vertex-shader">
+        attribute vec4 vPosition;
+        attribute vec4 vColor;
+        varying vec4 fColor;
+        void main() {
+            gl_Position = vPosition;
+            fColor = vColor;
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragment-shader">
+        precision mediump float;
+        varying vec4 fColor;
+        void main() {
+            gl_FragColor = fColor;
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512">
+        <!-- The following message is displayed if the browser doesn’t
+        -- support HTML5 -->
+        Sorry, your web browser does not support HTML5’s canvas element.
+    </canvas>
+
+    <select id="clear-color">
+        <option value="0" selected>black</option>
+        <option value="1" selected>red</option>
+        <option value="2" selected>yellow</option>
+        <option value="3" selected>green</option>
+        <option value="4" selected>cyan</option>
+        <option value="5" selected>blue</option>
+        <option value="6" selected>magenta</option>
+    </select>
+    <button id="clear-button">CLEAR</button>
+
+    <br>
+    
+    <button id="point-button">Point</button>
+    <button id="triangle-button">Triangle</button>
+    <button id="circle-button">Circle</button>
+    <select id="draw-color">
+        <option value="0" selected>black</option>
+        <option value="1" selected>red</option>
+        <option value="2" selected>yellow</option>
+        <option value="3" selected>green</option>
+        <option value="4" selected>cyan</option>
+        <option value="5" selected>blue</option>
+        <option value="6" selected>magenta</option>
+        <option value="7" selected>white</option>
+    </select>
+
+</body>
+</html>
