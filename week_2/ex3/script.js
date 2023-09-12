@@ -13,9 +13,6 @@ colors = [black, red, yellow, green, cyan, blue, magenta, white]
 window.onload = function init() {
     var canvas = document.getElementById("gl-canvas");
     var clearButton = document.getElementById("clear-button");
-    var pointButton = document.getElementById("point-button");
-    var triangeButton = document.getElementById("triangle-button");
-    var circleButton = document.getElementById("circle-button");
     var clearColorSelector = document.getElementById("clear-color");
     var drawColorSelector = document.getElementById("draw-color");
 
@@ -28,42 +25,16 @@ window.onload = function init() {
     var maxVerts = 1000;
     var index = 0;
     var numPoints = 0;
-    var drawMode = 0; // 0 point, 1 triangle, 2 sphere
-    var pointSize = 0.02;
-    var prevPoints = []
-
-    pointButton.addEventListener("click", function(event) {
-        drawMode = 0;
-    })
-
-    triangeButton.addEventListener("click", function(event) {
-        drawMode = 1;
-    })
-
-    circleButton.addEventListener("click", function(event) {
-        drawMode = 2;
-    })
-
-    function drawPoint(x, y) {
-        var bottomLeft = vec2(x - pointSize, y - pointSize);
-        var topLeft = vec2(x - pointSize, y + pointSize);
-        var bottomRight = vec2(x + pointSize, y - pointSize);
-        var topRight = vec2(x + pointSize, y + pointSize);
-        var points = [topLeft, bottomLeft, bottomRight, bottomRight, topRight, topLeft];
-        var currentColor = colors[drawColorSelector.selectedIndex];
-        var pointColors = []
-        for (let index = 0; index < 6; index++) {
-            pointColors.push(currentColor);       
-        }
-        gl.bufferSubData(gl.ARRAY_BUFFER, index * sizeof["vec2"], flatten(points));
-        gl.bufferSubData(gl.ARRAY_BUFFER, maxVerts * sizeof["vec2"] + index * sizeof["vec4"], flatten(pointColors));
-        index += 6;
-    }
 
     canvas.addEventListener("click", function (event) {
         var x = (event.clientX - canvas.width / 2) / (canvas.width / 2);
-        var y = 1 - (event.clientY) / (canvas.width / 2);
-        drawPoint(x, y);
+        var y = 1 - (event.clientY) / (canvas.width / 2)
+        var p = vec2(x, y);
+        gl.bufferSubData(gl.ARRAY_BUFFER, index * sizeof["vec2"], flatten(p));
+        var currentColor = colors[drawColorSelector.selectedIndex];
+        gl.bufferSubData(gl.ARRAY_BUFFER, maxVerts * sizeof["vec2"] + index * sizeof["vec4"], flatten(currentColor));
+        index++;
+        numPoints++;
     })
 
     clearButton.addEventListener("click", function (event) {
@@ -90,7 +61,7 @@ window.onload = function init() {
     
     function render() {
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.drawArrays(gl.TRIANGLES, 0, maxVerts);
+        gl.drawArrays(gl.POINTS, 0, maxVerts);
     }
 
     
