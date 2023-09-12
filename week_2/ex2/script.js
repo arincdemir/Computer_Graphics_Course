@@ -25,11 +25,12 @@ window.onload = function init() {
 
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    var maxVerts = 1000;
+    var maxVerts = 10000;
     var index = 0;
     var numPoints = 0;
     var drawMode = 0; // 0 point, 1 triangle, 2 sphere
     var pointSize = 0.02;
+    var circleSides = 20
     var prevPoints = []
     var prevPointsColors = [];
 
@@ -79,6 +80,10 @@ window.onload = function init() {
             prevPoints = [];
             prevPointsColors = [];
         }
+    }
+
+    function drawCircle(x, y) {
+
     }
 
     canvas.addEventListener("click", function (event) {
