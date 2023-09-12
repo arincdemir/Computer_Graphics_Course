@@ -31,17 +31,24 @@ window.onload = function init() {
     var drawMode = 0; // 0 point, 1 triangle, 2 sphere
     var pointSize = 0.02;
     var prevPoints = []
+    var prevPointsColors = [];
 
     pointButton.addEventListener("click", function(event) {
         drawMode = 0;
+        prevPoints = [];
+        prevPointsColors = [];
     })
 
     triangeButton.addEventListener("click", function(event) {
         drawMode = 1;
+        prevPoints = [];
+        prevPointsColors = [];
     })
 
     circleButton.addEventListener("click", function(event) {
         drawMode = 2;
+        prevPoints = [];
+        prevPointsColors = [];
     })
 
     function drawPoint(x, y) {
@@ -60,10 +67,33 @@ window.onload = function init() {
         index += 6;
     }
 
+    function drawTriangle(x, y) {
+        var currentColor = colors[drawColorSelector.selectedIndex];
+        prevPoints.push(vec2(x, y));
+        prevPointsColors.push(currentColor);
+
+        if (prevPoints.length == 3) {
+            gl.bufferSubData(gl.ARRAY_BUFFER, index * sizeof["vec2"], flatten(prevPoints));
+            gl.bufferSubData(gl.ARRAY_BUFFER, maxVerts * sizeof["vec2"] + index * sizeof["vec4"], flatten(prevPointsColors));
+            index += 3;
+            prevPoints = [];
+            prevPointsColors = [];
+        }
+    }
+
     canvas.addEventListener("click", function (event) {
         var x = (event.clientX - canvas.width / 2) / (canvas.width / 2);
         var y = 1 - (event.clientY) / (canvas.width / 2);
-        drawPoint(x, y);
+        switch (drawMode) {
+            case 0:
+                drawPoint(x, y);
+                break;
+            case 1:
+                drawTriangle(x, y);
+            default:
+                break;
+        }
+
     })
 
     clearButton.addEventListener("click", function (event) {
