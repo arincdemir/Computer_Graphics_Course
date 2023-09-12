@@ -14,6 +14,7 @@ window.onload = function init() {
     var canvas = document.getElementById("gl-canvas");
     var clearButton = document.getElementById("clear-button");
     var clearColorSelector = document.getElementById("clear-color");
+    var drawColorSelector = document.getElementById("draw-color");
 
     var gl = WebGLUtils.setupWebGL(canvas);
     gl.clearColor(0.3921, 0.5843, 0.9294, 1.0);
@@ -30,14 +31,14 @@ window.onload = function init() {
         var y = 1 - (event.clientY) / (canvas.width / 2)
         var p = vec2(x, y);
         gl.bufferSubData(gl.ARRAY_BUFFER, index * sizeof["vec2"], flatten(p));
-        var currentColor = red;
+        var currentColor = colors[drawColorSelector.selectedIndex];
         gl.bufferSubData(gl.ARRAY_BUFFER, maxVerts * sizeof["vec2"] + index * sizeof["vec4"], flatten(currentColor));
         index++;
         numPoints++;
     })
 
     clearButton.addEventListener("click", function (event) {
-        gl.bufferData(gl.ARRAY_BUFFER, maxVerts * sizeof["vec2"], gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER,  maxVerts * (sizeof["vec2"] + sizeof["vec4"]), gl.STATIC_DRAW);
         index = 0;
         numPoints = 0;
         var selectedColor = colors[clearColorSelector.selectedIndex];
