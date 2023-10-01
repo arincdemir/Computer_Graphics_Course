@@ -10,12 +10,11 @@
 
     <script type="x-shader/x-fragment" id="vertex-shader">
         attribute vec4 vPosition;
-        uniform float theta;
+        uniform mat4 projectionMatrix;
+        uniform mat4 modelViewMatrix;
+
         void main() {
-            gl_Position.x = vPosition.x * cos(theta) - vPosition.y * sin(theta);
-            gl_Position.y = vPosition.x * sin(theta) + vPosition.y * cos(theta);
-            gl_Position.z = vPosition.z;
-            gl_Position.w = 1.0;
+            gl_Position = projectionMatrix * modelViewMatrix * vPosition;
         }
     </script>
     <script type="x-shader/x-fragment" id="fragment-shader">

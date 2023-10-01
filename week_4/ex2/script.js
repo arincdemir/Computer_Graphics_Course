@@ -51,21 +51,47 @@ window.onload = function init() {
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
 
-  // Set the projection matrix (orthographic in this case)
-  var projectionMatrix = ortho(-1, 1, -1, 1, -1, 10);
+  // Set the projection matrix (perspective in this case)
+  var projectionMatrix = perspective(45, 1, 0.1, 10);
   var projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
-  console.log(projectionMatrix);
 
-  // Set the model-view matrix for isometric view
-  var modelViewMatrix = lookAt(vec3(1, 1, 1.), vec3(0., 0., 0.), vec3(0., 1., 0.));
-  console.log(modelViewMatrix);
+  // Set the model-view matrix for 1 point view
+  //var modelViewMatrix = lookAt(vec3(0, 0, 0), vec3(0., 0., 0.), vec3(0., 1., 0.));
+  var modelViewMatrix = translate(0, 0, -6);
   var modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
   // Clear the canvas and draw the wireframe cube
   gl.clearColor(0., 0., 0., 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT); 
+  gl.drawArrays(gl.LINES, 0, edges.length);
+
+
+  // Set the model-view matrix for 2 point view
+  modelViewMatrix = mat4();
+  modelViewMatrix = mult(rotateY(45), modelViewMatrix);
+  modelViewMatrix = mult(translate(0, 0, -6), modelViewMatrix);
+  modelViewMatrix = mult(rotateY(15), modelViewMatrix);
+  var modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  // Clear the canvas and draw the wireframe cube
+  //gl.clear(gl.COLOR_BUFFER_BIT); 
+  gl.drawArrays(gl.LINES, 0, edges.length);
+
+
+  // Set the model-view matrix for 3 point view
+  modelViewMatrix = mat4();
+  modelViewMatrix = mult(rotateZ(45), modelViewMatrix);
+  modelViewMatrix = mult(rotateX(45), modelViewMatrix);
+  modelViewMatrix = mult(translate(0, 0, -6), modelViewMatrix);
+  modelViewMatrix = mult(rotateY(-15), modelViewMatrix);
+  var modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  // Clear the canvas and draw the wireframe cube
+  //gl.clear(gl.COLOR_BUFFER_BIT); 
   gl.drawArrays(gl.LINES, 0, edges.length);
 
 };
