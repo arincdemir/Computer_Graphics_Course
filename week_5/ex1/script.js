@@ -9,43 +9,18 @@ window.onload = function init() {
     alert("WebGL isn't available");
   }
 
-  // Define vertices for the unit cube
-  var vertices = [
-    vec4(-0.5, -0.5, 0.5, 1),  // A
-    vec4(0.5, -0.5, 0.5, 1),  // B
-    vec4(0.5, 0.5, 0.5, 1),  // C
-    vec4(-0.5, 0.5, 0.5, 1),  // D
-    vec4(-0.5, -0.5, -0.5, 1),  // E
-    vec4(0.5, -0.5, -0.5, 1),  // F
-    vec4(0.5, 0.5, -0.5, 1),  // G
-    vec4(-0.5, 0.5, -0.5, 1)   // H
-  ];
-
-  // Define edges by connecting vertices
-  var edges = [
-    vertices[0], vertices[1],
-    vertices[1], vertices[2],
-    vertices[2], vertices[3],
-    vertices[3], vertices[0],
-    vertices[4], vertices[5],
-    vertices[5], vertices[6],
-    vertices[6], vertices[7],
-    vertices[7], vertices[4],
-    vertices[0], vertices[4],
-    vertices[1], vertices[5],
-    vertices[2], vertices[6],
-    vertices[3], vertices[7]
-  ];
+  // Draw a sphere dividing a tetrahedron into 4 equal parts
+  initSphere();
 
   // Load shaders and initialize attribute buffers
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  // Create a buffer for the cube's edges
+  // Create a buffer for the sphere's vertices
   gl.vBuffer = null;
-  //gl.bindBuffer(gl.ARRAY_BUFFER, gl.vBuffer);
-  //gl.bufferData(gl.ARRAY_BUFFER, flatten(edges), gl.STATIC_DRAW);
-  initSphere();
+  gl.vBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.vBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
   // Associate our shader variables with our data buffer
   var vPosition = gl.getAttribLocation(program, "vPosition");
@@ -58,58 +33,54 @@ window.onload = function init() {
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
   // Set the model-view matrix for 1 point view
-  //var modelViewMatrix = lookAt(vec3(0, 0, 0), vec3(0., 0., 0.), vec3(0., 1., 0.));
   var modelViewMatrix = translate(0, 0, -4);
   var modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-  // Clear the canvas and draw the wireframe cube
+  // Draw the sphere
   gl.clearColor(0., 0., 0., 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT); 
-  gl.drawArrays(gl.LINES, 0, edges.length);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, points.length);
 
 
-  initSphere();
 
 };
-
 
 function initSphere() {
   var va = vec4(0.0, 0.0, -1.0, 1);
   var vb = vec4(0.0, 0.942809, 0.333333, 1);
   var vc = vec4(-0.816497, -0.471405, 0.333333, 1);
   var vd = vec4(0.816497, -0.471405, 0.333333, 1);
-  var points = tetrahedron(va, vb, vc, vd, 1);
 
-  gl.deleteBuffer(gl.vBuffer);
-  gl.vBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.vBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
-  //console.log(flatten(points));
+  tetrahedron(va, vb, vc, vd, 4);
 }
 
-function tetrahedron(a, b, c, d, n) {
-  var points = [];
-  divideTriangle(points, a, b, c, n);
-  divideTriangle(points, d, c, b, n);
-  divideTriangle(points, a, d, b, n);
-  divideTriangle(points, a, c, d, n);
-  return points;
+function triangle(a, b, c) {
+  points.push(a, b, c);
 }
 
-function divideTriangle(points, a, b, c, n) {
-  if(n == 0) {
-    points.push(a, b, b, c, c, a);
-  }
-  else {
+
+function divideTriangle(a, b, c, count) {
+  if (count === 0) {
+    triangle(a, b, c);
+  } else {
     var ab = normalize(mix(a, b, 0.5), true);
     var ac = normalize(mix(a, c, 0.5), true);
     var bc = normalize(mix(b, c, 0.5), true);
-    --n;
-    divideTriangle(points, a, ab, ac, n);
-    divideTriangle(points, ab, b, bc, n);
-    divideTriangle(points, bc, c, ac, n);
-    divideTriangle(points, ab, bc, ac, n);
-  }
 
+    --count;
+
+    divideTriangle(a, ab, ac, count);
+    divideTriangle(c, ac, bc, count);
+    divideTriangle(b, bc, ab, count);
+    divideTriangle(ab, bc, ac, count);
+  }
 }
+
+function tetrahedron(a, b, c, d, n) {
+  divideTriangle(a, b, c, n);
+  divideTriangle(d, c, b, n);
+  divideTriangle(a, d, b, n);
+  divideTriangle(a, c, d, n);
+}
+
