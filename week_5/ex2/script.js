@@ -2,6 +2,8 @@ var gl;
 var program;
 var points = [];
 
+var numTimesToSubdivide = 3;
+
 window.onload = function init() {
   var canvas = document.getElementById("gl-canvas");
   gl = WebGLUtils.setupWebGL(canvas);
@@ -9,6 +11,24 @@ window.onload = function init() {
     alert("WebGL isn't available");
   }
 
+  // Add event listener for buttons
+  document.getElementById("increase").addEventListener("click", function () {
+    numTimesToSubdivide++;
+    render();
+  });
+
+  document.getElementById("decrease").addEventListener("click", function () {
+    if (numTimesToSubdivide > 0) {
+      numTimesToSubdivide--;
+      render();
+    }
+  });
+
+  setInterval(render, 100);
+
+};
+
+function render() {
   // Draw a sphere dividing a tetrahedron into 4 equal parts
   initSphere();
 
@@ -42,17 +62,16 @@ window.onload = function init() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, points.length);
 
-
-
-};
+}
 
 function initSphere() {
+  points = [];
   var va = vec4(0.0, 0.0, -1.0, 1);
   var vb = vec4(0.0, 0.942809, 0.333333, 1);
   var vc = vec4(-0.816497, -0.471405, 0.333333, 1);
   var vd = vec4(0.816497, -0.471405, 0.333333, 1);
 
-  tetrahedron(va, vb, vc, vd, 4);
+  tetrahedron(va, vb, vc, vd, numTimesToSubdivide);
 }
 
 function triangle(a, b, c) {
