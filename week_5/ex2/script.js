@@ -11,6 +11,9 @@ window.onload = function init() {
     alert("WebGL isn't available");
   }
 
+  gl.enable(gl.CULL_FACE);
+  gl.enable(gl.DEPTH_TEST);
+
   // Add event listener for buttons
   document.getElementById("increase").addEventListener("click", function () {
     numTimesToSubdivide++;
@@ -59,7 +62,7 @@ function render() {
 
   // Draw the sphere
   gl.clearColor(0., 0., 0., 1.0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, points.length);
 
 }
